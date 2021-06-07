@@ -1,5 +1,6 @@
 import './transaction_model.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 void main() {
   runApp(MyApp());
@@ -90,11 +91,11 @@ class MyHomePage extends StatelessWidget {
                         horizontal: 10.0,
                         vertical: 5.0,
                       ),
-                      width: 50.0,
+                      width: 80.0,
                       height: 50.0,
                       child: Center(
                         child: Text(
-                          tx.amount.toString(),
+                          '${tx.amount} KM',
                           style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
@@ -114,7 +115,7 @@ class MyHomePage extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          tx.date.toString(),
+                          DateFormat('dd/MM/yyyy').format(tx.date),
                           style: TextStyle(
                             color: Colors.grey,
                           ),
