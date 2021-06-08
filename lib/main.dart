@@ -1,3 +1,4 @@
+import 'package:expense_app/widgets/new_transaction.dart';
 import 'package:flutter/material.dart';
 
 import 'widgets/user_transaction.dart';
@@ -20,27 +21,30 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatelessWidget {
+  MyHomePage({Key key, this.title}) : super(key: key);
   final String title;
 
-  MyHomePage({Key key, this.title}) : super(key: key);
+  void showAddNewExpense(BuildContext context) {
+    showModalBottomSheet(
+        context: context,
+        builder: (BuildContext ctx) {
+          return NewTransaction();
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () => showAddNewExpense(context),
         child: Icon(Icons.add),
       ),
       appBar: AppBar(
         actions: [
-          TextButton(
+          IconButton(
+            icon: Icon(Icons.add),
             onPressed: () {},
-            child: Text(
-              'Dodaj',
-              style: TextStyle(
-                color: Colors.white,
-              ),
-            ),
-          )
+          ),
         ],
         title: Text(title),
       ),
