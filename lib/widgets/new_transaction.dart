@@ -6,6 +6,18 @@ class NewTransaction extends StatelessWidget {
   final titleController = TextEditingController();
   final amountController = TextEditingController();
 
+  void submitData() {
+    final enteredTitle = titleController.text;
+    final enteredAmount = double.parse(amountController.text);
+    if (enteredTitle.isEmpty || enteredAmount <= 0) {
+      return;
+    }
+    newTransaction(
+      enteredTitle,
+      enteredAmount,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -15,25 +27,25 @@ class NewTransaction extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             TextField(
+              textInputAction: TextInputAction.next,
               controller: titleController,
               decoration: InputDecoration(
                 labelText: 'Naziv',
               ),
-              keyboardType: TextInputType.number,
             ),
             TextField(
+              textInputAction: TextInputAction.done,
+              onSubmitted: (_) => submitData(),
               controller: amountController,
               decoration: InputDecoration(
                 labelText: 'Iznos',
               ),
+              keyboardType: TextInputType.numberWithOptions(
+                decimal: true,
+              ),
             ),
             TextButton(
-              onPressed: () {
-                newTransaction(
-                  titleController.text,
-                  double.parse(amountController.text),
-                );
-              },
+              onPressed: submitData,
               child: Text('Dodaj trošak'),
             ),
           ],

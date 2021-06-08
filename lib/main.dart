@@ -44,28 +44,30 @@ class MyHomePage extends StatelessWidget {
         ],
         title: Text(title),
       ),
-      body: Column(
-        children: [
-          Container(
-            width: double.infinity,
-            height: 150.0,
-            padding: EdgeInsets.all(8.0),
-            child: Card(
-              child: Center(
-                child: Text(
-                  'CHART',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 25.0,
-                    fontWeight: FontWeight.bold,
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Container(
+              width: double.infinity,
+              height: 150.0,
+              padding: EdgeInsets.all(8.0),
+              child: Card(
+                child: Center(
+                  child: Text(
+                    'CHART',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 25.0,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
+                color: Colors.indigo.shade400,
               ),
-              color: Colors.indigo.shade400,
             ),
-          ),
-          UserTransaction(),
-        ],
+            UserTransaction(),
+          ],
+        ),
       ),
     );
   }

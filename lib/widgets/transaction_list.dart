@@ -30,7 +30,7 @@ class TransactionList extends StatelessWidget {
                   height: 50.0,
                   child: Center(
                     child: Text(
-                      transactions[index].amount.toString() + ' KM',
+                      transactions[index].amount.toStringAsFixed(2) + ' KM',
                       style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
