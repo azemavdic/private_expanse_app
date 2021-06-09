@@ -1,7 +1,8 @@
 import 'package:expense_app/widgets/new_transaction.dart';
+import 'package:expense_app/widgets/transaction_list.dart';
 import 'package:flutter/material.dart';
 
-import 'widgets/user_transaction.dart';
+import 'models/transaction_model.dart';
 
 void main() {
   runApp(MyApp());
@@ -20,15 +21,61 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyHomePage extends StatelessWidget {
+class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
   final String title;
 
-  void showAddNewExpense(BuildContext context) {
+  @override
+  _MyHomePageState createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  List<TransactionModel> _transactions = [
+    TransactionModel(
+      id: '1',
+      title: 'Kupovina 1',
+      amount: 25.5,
+      date: DateTime.now(),
+    ),
+    TransactionModel(
+      id: '2',
+      title: 'Kupovina 2',
+      amount: 30,
+      date: DateTime.now(),
+    ),
+    TransactionModel(
+      id: '3',
+      title: 'Kupovina 3',
+      amount: 12.7,
+      date: DateTime.now(),
+    ),
+    TransactionModel(
+      id: '4',
+      title: 'Kupovina 5',
+      amount: 7.5,
+      date: DateTime.now(),
+    ),
+  ];
+
+  void _addNewTransaction(String title, double amount) {
+    final newTransaction = TransactionModel(
+        id: DateTime.now().toString(),
+        title: title,
+        amount: amount,
+        date: DateTime.now());
+
+    setState(() {
+      _transactions.add(newTransaction);
+    });
+  }
+
+  void _showAddNewExpense(BuildContext context) {
     showModalBottomSheet(
         context: context,
         builder: (BuildContext ctx) {
-          return NewTransaction();
+          return NewTransaction(
+            newTransaction: _addNewTransaction,
+          );
         });
   }
 
@@ -36,17 +83,17 @@ class MyHomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        onPressed: () => showAddNewExpense(context),
+        onPressed: () => _showAddNewExpense(context),
         child: Icon(Icons.add),
       ),
       appBar: AppBar(
         actions: [
           IconButton(
             icon: Icon(Icons.add),
-            onPressed: () {},
+            onPressed: () => _showAddNewExpense(context),
           ),
         ],
-        title: Text(title),
+        title: Text(widget.title),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -69,7 +116,9 @@ class MyHomePage extends StatelessWidget {
                 color: Colors.indigo.shade400,
               ),
             ),
-            UserTransaction(),
+            TransactionList(
+              transactions: _transactions,
+            ),
           ],
         ),
       ),
