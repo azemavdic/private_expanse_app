@@ -1,3 +1,4 @@
+import 'package:expense_app/widgets/chart.dart';
 import 'package:expense_app/widgets/new_transaction.dart';
 import 'package:expense_app/widgets/transaction_list.dart';
 import 'package:flutter/material.dart';
@@ -59,6 +60,18 @@ class _MyHomePageState extends State<MyHomePage> {
     // ),
   ];
 
+  List<TransactionModel> get _recentTransactions {
+    return _transactions
+        .where(
+          (tx) => tx.date.isAfter(
+            DateTime.now().subtract(
+              Duration(days: 7),
+            ),
+          ),
+        )
+        .toList();
+  }
+
   void _addNewTransaction(String title, double amount) {
     final newTransaction = TransactionModel(
         id: DateTime.now().toString(),
@@ -83,29 +96,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    var children2 = [
-      Container(
-        width: double.infinity,
-        height: 150.0,
-        padding: EdgeInsets.all(8.0),
-        child: Card(
-          child: Center(
-            child: Text(
-              'CHART',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 25.0,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          color: Colors.indigo.shade400,
-        ),
-      ),
-      TransactionList(
-        transactions: _transactions,
-      ),
-    ];
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showAddNewExpense(context),
@@ -122,7 +112,14 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: SingleChildScrollView(
         child: Column(
-          children: children2,
+          children: [
+            Chart(
+              recentTransactions: _recentTransactions,
+            ),
+            TransactionList(
+              transactions: _transactions,
+            ),
+          ],
         ),
       ),
     );
