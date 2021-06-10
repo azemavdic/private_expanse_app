@@ -1,4 +1,5 @@
 import 'package:expense_app/models/transaction_model.dart';
+import 'package:expense_app/widgets/chart_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -23,26 +24,44 @@ class Chart extends StatelessWidget {
         }
       }
 
-      print(DateFormat.E().format(weekDay));
-      print(totalSum);
-
       return {
-        'day': DateFormat.E().format(weekDay),
-        'amount': totalSum.toStringAsFixed(2),
+        'day': DateFormat.E().format(weekDay).substring(0, 1),
+        'amount': totalSum,
       };
     });
   }
 
+  double get totalSpending {
+    return groupedTransactionValues.fold(0, (acc, el) => acc + el['amount']);
+  }
+
+  double showBars(Map<String, Object> tx, String amount) {
+    if (totalSpending > 0) {
+      return (tx[amount] as double) / totalSpending;
+    }
+    return 0;
+  }
+
   @override
   Widget build(BuildContext context) {
-    print(groupedTransactionValues);
     return Card(
       elevation: 6,
       margin: EdgeInsets.all(10.0),
-      child: Row(
-        children: groupedTransactionValues.map((tx) {
-          return Text(tx['day']);
-        }).toList(),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: groupedTransactionValues.map((tx) {
+            return Flexible(
+              fit: FlexFit.tight,
+              child: ChartBar(
+                label: tx['day'],
+                spendingAmount: tx['amount'],
+                spendingPctOfTotal: showBars(tx, 'amount'),
+              ),
+            );
+          }).toList(),
+        ),
       ),
     );
   }
