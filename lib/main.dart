@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:expense_app/widgets/chart.dart';
 import 'package:expense_app/widgets/new_transaction.dart';
 import 'package:expense_app/widgets/transaction_list.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'models/transaction_model.dart';
@@ -111,6 +114,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
+    final _isIos = Platform.isIOS;
     final _isLandscape = mediaQuery.orientation == Orientation.landscape;
     final appBar = AppBar(
       actions: [
@@ -131,13 +135,8 @@ class _MyHomePageState extends State<MyHomePage> {
         deleteTransaction: _deleteTransaction,
       ),
     );
-    return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => _showAddNewExpense(context),
-        child: Icon(Icons.add),
-      ),
-      appBar: appBar,
-      body: SingleChildScrollView(
+    final bodyPage = SafeArea(
+      child: SingleChildScrollView(
         child: Column(
           children: [
             if (_isLandscape)
@@ -145,7 +144,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text('Prikaži dijagram'),
-                  Switch(
+                  Switch.adaptive(
                       value: _showChart,
                       onChanged: (bool newValue) {
                         setState(() {
@@ -181,5 +180,22 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
     );
+    return _isIos
+        ? CupertinoPageScaffold(
+            child: bodyPage,
+            navigationBar: CupertinoNavigationBar(
+              middle: Text(widget.title),
+            ),
+          )
+        : Scaffold(
+            floatingActionButton: !_isIos
+                ? FloatingActionButton(
+                    onPressed: () => _showAddNewExpense(context),
+                    child: Icon(Icons.add),
+                  )
+                : null,
+            appBar: appBar,
+            body: bodyPage,
+          );
   }
 }
