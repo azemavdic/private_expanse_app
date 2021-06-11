@@ -6,6 +6,11 @@ import 'package:flutter/material.dart';
 import 'models/transaction_model.dart';
 
 void main() {
+  // WidgetsFlutterBinding.ensureInitialized();
+  // SystemChrome.setPreferredOrientations([
+  //   DeviceOrientation.portraitUp,
+  //   DeviceOrientation.portraitDown,
+  // ]);
   runApp(MyApp());
 }
 
@@ -54,11 +59,13 @@ class _MyHomePageState extends State<MyHomePage> {
     ),
     TransactionModel(
       id: '4',
-      title: 'Kupovina 5',
+      title: 'Kupovina 4',
       amount: 7.5,
       date: DateTime.now(),
     ),
   ];
+
+  bool _showChart = false;
 
   List<TransactionModel> get _recentTransactions {
     return _transactions
@@ -103,30 +110,57 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final appBar = AppBar(
+      actions: [
+        IconButton(
+          icon: Icon(Icons.add),
+          onPressed: () => _showAddNewExpense(context),
+        ),
+      ],
+      title: Text(widget.title),
+    );
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showAddNewExpense(context),
         child: Icon(Icons.add),
       ),
-      appBar: AppBar(
-        actions: [
-          IconButton(
-            icon: Icon(Icons.add),
-            onPressed: () => _showAddNewExpense(context),
-          ),
-        ],
-        title: Text(widget.title),
-      ),
+      appBar: appBar,
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Chart(
-              recentTransactions: _recentTransactions,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text('Prikaži dijagram'),
+                Switch(
+                    value: _showChart,
+                    onChanged: (bool newValue) {
+                      setState(() {
+                        _showChart = newValue;
+                      });
+                    }),
+              ],
             ),
-            TransactionList(
-              transactions: _transactions,
-              deleteTransaction: _deleteTransaction,
-            ),
+            _showChart
+                ? Container(
+                    height: (MediaQuery.of(context).size.height -
+                            appBar.preferredSize.height -
+                            MediaQuery.of(context).padding.top) *
+                        0.7,
+                    child: Chart(
+                      recentTransactions: _recentTransactions,
+                    ),
+                  )
+                : Container(
+                    height: (MediaQuery.of(context).size.height -
+                            appBar.preferredSize.height -
+                            MediaQuery.of(context).padding.top) *
+                        0.75,
+                    child: TransactionList(
+                      transactions: _transactions,
+                      deleteTransaction: _deleteTransaction,
+                    ),
+                  ),
           ],
         ),
       ),
