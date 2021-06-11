@@ -110,6 +110,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final _isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
     final appBar = AppBar(
       actions: [
         IconButton(
@@ -118,6 +120,16 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ],
       title: Text(widget.title),
+    );
+    final txListWidget = Container(
+      height: (MediaQuery.of(context).size.height -
+              appBar.preferredSize.height -
+              MediaQuery.of(context).padding.top) *
+          0.75,
+      child: TransactionList(
+        transactions: _transactions,
+        deleteTransaction: _deleteTransaction,
+      ),
     );
     return Scaffold(
       floatingActionButton: FloatingActionButton(
@@ -128,39 +140,43 @@ class _MyHomePageState extends State<MyHomePage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text('Prikaži dijagram'),
-                Switch(
-                    value: _showChart,
-                    onChanged: (bool newValue) {
-                      setState(() {
-                        _showChart = newValue;
-                      });
-                    }),
-              ],
-            ),
-            _showChart
-                ? Container(
-                    height: (MediaQuery.of(context).size.height -
-                            appBar.preferredSize.height -
-                            MediaQuery.of(context).padding.top) *
-                        0.7,
-                    child: Chart(
-                      recentTransactions: _recentTransactions,
-                    ),
-                  )
-                : Container(
-                    height: (MediaQuery.of(context).size.height -
-                            appBar.preferredSize.height -
-                            MediaQuery.of(context).padding.top) *
-                        0.75,
-                    child: TransactionList(
-                      transactions: _transactions,
-                      deleteTransaction: _deleteTransaction,
-                    ),
-                  ),
+            if (_isLandscape)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('Prikaži dijagram'),
+                  Switch(
+                      value: _showChart,
+                      onChanged: (bool newValue) {
+                        setState(() {
+                          _showChart = newValue;
+                        });
+                      }),
+                ],
+              ),
+            if (!_isLandscape)
+              Container(
+                height: (MediaQuery.of(context).size.height -
+                        appBar.preferredSize.height -
+                        MediaQuery.of(context).padding.top) *
+                    0.3,
+                child: Chart(
+                  recentTransactions: _recentTransactions,
+                ),
+              ),
+            if (!_isLandscape) txListWidget,
+            if (_isLandscape)
+              _showChart
+                  ? Container(
+                      height: (MediaQuery.of(context).size.height -
+                              appBar.preferredSize.height -
+                              MediaQuery.of(context).padding.top) *
+                          0.7,
+                      child: Chart(
+                        recentTransactions: _recentTransactions,
+                      ),
+                    )
+                  : txListWidget,
           ],
         ),
       ),
